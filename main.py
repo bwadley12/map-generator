@@ -3,24 +3,26 @@ import map
 
 tile_size = 80
 rows = 8
-columns = 8
-
+columns = 10
 screen_height = tile_size*rows
 screen_width = tile_size*columns
+menu_width = 200
+
+standard_button_height = 40
 
 pygame.init()
 
-display_screen = pygame.display.set_mode((tile_size*columns,tile_size*rows + 50))
+display_screen = pygame.display.set_mode((tile_size*columns + menu_width, tile_size*rows))
 
 map = map.Map(rows, columns, tile_size)
 
-button = pygame.Surface((100,30))
-button.fill((255,255,255))
-button_rect = button.get_rect(x=300, y = screen_height+10)
-
+button = pygame.Rect(screen_width, screen_height - standard_button_height, menu_width, standard_button_height)
+font = pygame.font.SysFont("Verdana", 20)
+print_display = font.render("Print",True, (0,0,0))
 
 while True:
-    display_screen.blit(button, button_rect)
+    pygame.draw.rect(display_screen, [255, 255, 255], button)
+    display_screen.blit(print_display, (button.centerx - print_display.get_width()/2, button.centery - print_display.get_height()/2))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -28,26 +30,27 @@ while True:
             sys.exit()
 
         elif event.type == pygame.KEYDOWN:
-            if(pygame.key.get_pressed()[pygame.K_UP]):
+            if(pygame.key.get_pressed()[pygame.K_w]):
                 map.tile_list[map.active_tile_x][map.active_tile_y].change_state(1)
-            elif(pygame.key.get_pressed()[pygame.K_DOWN]):
-                map.tile_list[map.active_tile_x][map.active_tile_y].change_state(-1)
-            elif(pygame.key.get_pressed()[pygame.K_d]):
-                map.increment_active_tile(1,0)
-            elif(pygame.key.get_pressed()[pygame.K_a]):
-                map.increment_active_tile(-1,0)
-            elif(pygame.key.get_pressed()[pygame.K_w]):
-                map.increment_active_tile(0,-1)
             elif(pygame.key.get_pressed()[pygame.K_s]):
+                map.tile_list[map.active_tile_x][map.active_tile_y].change_state(-1)
+            elif(pygame.key.get_pressed()[pygame.K_RIGHT]):
+                map.increment_active_tile(1,0)
+            elif(pygame.key.get_pressed()[pygame.K_LEFT]):
+                map.increment_active_tile(-1,0)
+            elif(pygame.key.get_pressed()[pygame.K_UP]):
+                map.increment_active_tile(0,-1)
+            elif(pygame.key.get_pressed()[pygame.K_DOWN]):
                 map.increment_active_tile(0,1)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            x,y = pygame.mouse.get_pos()
-
-            x_grid = math.floor(x/tile_size)
-            y_grid = math.floor(y/tile_size)
-
-            map.set_active_tile(x_grid, y_grid)
+            if button.collidepoint(event.pos):
+                print(map.get_tile_states())
+            else:
+                x,y = pygame.mouse.get_pos()
+                x_grid = math.floor(x/tile_size)
+                y_grid = math.floor(y/tile_size)
+                map.set_active_tile(x_grid, y_grid)
 
     for y_pos in range(rows):
         for x_pos in range(columns):
