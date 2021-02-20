@@ -1,22 +1,30 @@
 import pygame, sys, math
 import map
 
-tile_size = 80
-rows = 8
-columns = 10
-screen_height = tile_size*rows
-screen_width = tile_size*columns
-menu_width = 200
-
+default_screen_height = 750
+default_screen_width = 1000
+menu_width = 200 # screen width does not include menu_width
 standard_button_height = 40
+
+rows = 50
+columns = 75
+
+tile_size_x = math.floor(default_screen_width/columns)
+tile_size_y = math.floor(default_screen_height/rows)
+tile_size = min(tile_size_x, tile_size_y)
+
+game_board_x = columns*tile_size
+screen_height = rows*tile_size + 1
+
+screen_width = game_board_x + menu_width
 
 pygame.init()
 
-display_screen = pygame.display.set_mode((tile_size*columns + menu_width, tile_size*rows))
+display_screen = pygame.display.set_mode((screen_width, screen_height))
 
 map = map.Map(rows, columns, tile_size)
 
-button = pygame.Rect(screen_width, screen_height - standard_button_height, menu_width, standard_button_height)
+button = pygame.Rect(game_board_x, screen_height - standard_button_height, menu_width, standard_button_height)
 font = pygame.font.SysFont("Verdana", 20)
 print_display = font.render("Print",True, (0,0,0))
 
@@ -56,11 +64,11 @@ while True:
         for x_pos in range(columns):
             display_screen.blit(map.tile_list[x_pos][y_pos].image, map.tile_list[x_pos][y_pos].rect)
 
-    for x_pos in range(columns):
+    for x_pos in range(columns+1):
         pygame.draw.line(display_screen, (255,255,255), (x_pos*tile_size,0), (x_pos*tile_size, screen_height))
 
-    for y_pos in range(rows):
-        pygame.draw.line(display_screen, (255,255,255), (0,tile_size*y_pos), (screen_width, tile_size*y_pos))
+    for y_pos in range(rows+1):
+        pygame.draw.line(display_screen, (255,255,255), (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
 
     pygame.draw.line(display_screen, (0,0,0), (map.active_tile_x*tile_size,map.active_tile_y*tile_size), ((map.active_tile_x+1)*tile_size,map.active_tile_y*tile_size))
     pygame.draw.line(display_screen, (0,0,0), (map.active_tile_x*tile_size,(map.active_tile_y+1)*tile_size), ((map.active_tile_x+1)*tile_size,(map.active_tile_y+1)*tile_size))
