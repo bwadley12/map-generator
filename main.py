@@ -68,6 +68,8 @@ while True:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button.collidepoint(event.pos):
                 print(map.get_tile_states())
+            elif grid_x_toggle.collidepoint(event.pos):
+                preferences.toggle_x_grid_enabled()
             else:
                 x,y = pygame.mouse.get_pos()
                 x_grid = math.floor(x/tile_size)
@@ -78,8 +80,10 @@ while True:
         for x_pos in range(columns):
             display_screen.blit(map.tile_list[x_pos][y_pos].image, map.tile_list[x_pos][y_pos].rect)
 
-    for x_pos in range(columns+1):
-        pygame.draw.line(display_screen, (255,255,255), (x_pos*tile_size,0), (x_pos*tile_size, screen_height))
+    if preferences.get_x_grid_enabled():
+        for x_pos in range(columns+1):
+            pygame.draw.line(display_screen, (255,255,255), (x_pos*tile_size,0), (x_pos*tile_size, screen_height))
+
 
     for y_pos in range(rows+1):
         pygame.draw.line(display_screen, (255,255,255), (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
