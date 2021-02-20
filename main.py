@@ -3,7 +3,7 @@ import map
 
 tile_size = 80
 rows = 8
-columns = 8
+columns = 10
 
 screen_height = tile_size*rows
 screen_width = tile_size*columns
@@ -15,14 +15,9 @@ display_screen = pygame.display.set_mode((tile_size*columns,tile_size*rows + 50)
 map = map.Map(rows, columns, tile_size)
 
 button = pygame.Rect(screen_width/2 - 40, screen_height + 10, 80, 30)
-#button.fill((255,255,255))
-#button_rect = button.get_rect(x=300, y = screen_height+10)
-
 
 while True:
-    #display_screen.blit(button, button_rect)
     pygame.draw.rect(display_screen, [255, 255, 255], button)
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -45,7 +40,7 @@ while True:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button.collidepoint(event.pos):
-                print("clicked")
+                print(map.get_tile_states())
             else:
                 x,y = pygame.mouse.get_pos()
                 x_grid = math.floor(x/tile_size)

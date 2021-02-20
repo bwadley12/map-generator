@@ -29,4 +29,7 @@ class MyTile():
         self.rect = self.image.get_rect()
         self.rect.x = self.x_pos*self.tile_size
         self.rect.y = self.y_pos*self.tile_size
+
+    def get_state(self):
+        return self.current_state
     

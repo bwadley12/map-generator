@@ -47,3 +47,13 @@ class Map():
 
     def get_active_tile(self):
         return self.active_tile_x, self.active_tile_y
+
+    def get_tile_states(self):
+        states = ""
+
+        for x_pos in range(self.rows):
+            for y_pos in range(self.columns):
+                states += str(self.tile_list[y_pos][x_pos].get_state()) + ", "
+            states += "\n"
+    
+        return states
