@@ -6,14 +6,17 @@ rows = 8
 columns = 10
 screen_height = tile_size*rows
 screen_width = tile_size*columns
+menu_width = 200
+
+standard_button_height = 40
 
 pygame.init()
 
-display_screen = pygame.display.set_mode((tile_size*columns,tile_size*rows + 50))
+display_screen = pygame.display.set_mode((tile_size*columns + menu_width, tile_size*rows))
 
 map = map.Map(rows, columns, tile_size)
 
-button = pygame.Rect(screen_width/2 - 40, screen_height + 10, 80, 30)
+button = pygame.Rect(screen_width, screen_height - standard_button_height, menu_width, standard_button_height)
 font = pygame.font.SysFont("Verdana", 20)
 print_display = font.render("Print",True, (0,0,0))
 
