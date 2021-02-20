@@ -4,7 +4,6 @@ import map
 tile_size = 80
 rows = 8
 columns = 10
-
 screen_height = tile_size*rows
 screen_width = tile_size*columns
 
@@ -15,9 +14,12 @@ display_screen = pygame.display.set_mode((tile_size*columns,tile_size*rows + 50)
 map = map.Map(rows, columns, tile_size)
 
 button = pygame.Rect(screen_width/2 - 40, screen_height + 10, 80, 30)
+font = pygame.font.SysFont("Verdana", 20)
+print_display = font.render("Print",True, (0,0,0))
 
 while True:
     pygame.draw.rect(display_screen, [255, 255, 255], button)
+    display_screen.blit(print_display, (button.centerx - print_display.get_width()/2, button.centery - print_display.get_height()/2))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
