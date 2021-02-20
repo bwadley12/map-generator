@@ -1,13 +1,14 @@
 import pygame, sys, math
-import map
+import map, preferences
 
 default_screen_height = 750
 default_screen_width = 1000
 menu_width = 200 # screen width does not include menu_width
+menu_padding = 15 
 standard_button_height = 40
 
-rows = 30
-columns = 25
+rows = 20
+columns = 20
 
 tile_size_x = math.floor(default_screen_width/columns)
 tile_size_y = math.floor(default_screen_height/rows)
@@ -21,22 +22,30 @@ screen_width = game_board_x + menu_width
 pygame.init()
 
 display_screen = pygame.display.set_mode((screen_width, screen_height))
-
 map = map.Map(rows, columns, tile_size)
+preferences = preferences.Preferences()
 
 button = pygame.Rect(game_board_x, screen_height - standard_button_height, menu_width, standard_button_height)
-font = pygame.font.SysFont("Verdana", 20)
-print_display = font.render("Print",True, (0,0,0))
+font = pygame.font.SysFont("Calibri", 20)
+font_small = pygame.font.SysFont("Calibri", 14)
+print_display = font.render("Print", True, (0,0,0))
 
-preferences_display = font.render("Preferences", True, (255,255,255))
-#grid_x_toggle = pygame.Rect()
+preferences_display = font.render("Preferences", True, (0,0,0))
+grid_x_toggle = pygame.Rect(game_board_x + menu_padding, 35, 15, 15)
+grid_x_label = font_small.render("Enable/Disable X grid",True, (0,0,0))
+
 
 while True:
+    display_screen.fill((255,255,255))
+
+    # building menu
     pygame.draw.rect(display_screen, [255, 255, 255], button)
     display_screen.blit(print_display, (button.centerx - print_display.get_width()/2, button.centery - print_display.get_height()/2))
 
     display_screen.blit(preferences_display, (game_board_x + menu_width/2 - preferences_display.get_width()/2, 10))
-    
+    pygame.draw.rect(display_screen, [200, 200, 200], grid_x_toggle)
+    display_screen.blit(grid_x_label, (grid_x_toggle.right + 10, grid_x_toggle.top))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
