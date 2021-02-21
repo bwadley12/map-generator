@@ -6,17 +6,17 @@ class Map():
     def __init__(self, rows, columns, tile_size):
         self.rows = rows
         self.columns = columns
-        self.active_tile_x = 0
-        self.active_tile_y = 0
         self.tile_size = tile_size
-        self.tile_list = []
-        self.active_tiles = selected_tiles.SelectedTiles()
 
+        self.tile_list = []
         for x_pos in range(self.columns):
             self.tile_list.append([])
             for y_pos in range(self.rows):
                 new_tile = mytile.MyTile(x_pos, y_pos, self.tile_size)
                 self.tile_list[x_pos].append(new_tile)
+
+        self.active_tiles = selected_tiles.SelectedTiles()
+        self.set_active_tile(0, 0, False)
 
     def set_active_tile(self, x_grid, y_grid, select_multiple):
         if not select_multiple:
