@@ -93,7 +93,9 @@ while True:
                 x,y = pygame.mouse.get_pos()
                 x_grid = math.floor(x/tile_size)
                 y_grid = math.floor(y/tile_size)
-                map.set_active_tile(x_grid, y_grid)
+                
+                if x_grid < columns: 
+                    map.set_active_tile(x_grid, y_grid)
 
     for y_pos in range(rows):
         for x_pos in range(columns):
