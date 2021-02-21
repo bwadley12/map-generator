@@ -105,7 +105,7 @@ while True:
                 y_grid = math.floor(y/tile_size)
                 
                 if x_grid < columns: 
-                    map.set_active_tile(x_grid, y_grid)
+                    map.set_active_tile(x_grid, y_grid, select_multiple)
 
     for y_pos in range(rows):
         for x_pos in range(columns):
