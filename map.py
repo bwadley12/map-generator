@@ -1,5 +1,6 @@
 import pygame
 import mytile
+import selected_tiles
 
 class Map():
     def __init__(self, rows, columns, tile_size):
@@ -9,6 +10,7 @@ class Map():
         self.active_tile_y = 0
         self.tile_size = tile_size
         self.tile_list = []
+        self.active_tiles = selected_tiles.SelectedTiles()
 
         for x_pos in range(self.columns):
             self.tile_list.append([])
@@ -44,6 +46,9 @@ class Map():
                     self.active_tile_y += change_y
                 else:
                     self.active_tile_y = len(self.tile_list[0]) - 1
+
+        self.active_tiles.add_tile(self.tile_list[self.active_tile_x][self.active_tile_y])
+
 
     def get_active_tile(self):
         return self.active_tile_x, self.active_tile_y
