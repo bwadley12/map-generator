@@ -8,11 +8,16 @@ class Map():
         self.columns = columns
         self.tile_size = tile_size
 
+        self.possible_states = [pygame.transform.scale(pygame.image.load("example_tile_image.png"), (tile_size,tile_size)), 
+                        pygame.transform.scale(pygame.image.load("example_tile_image2.png"), (tile_size,tile_size)),
+                        pygame.transform.scale(pygame.image.load("example_tile_image3.png"), (tile_size,tile_size)),
+                        pygame.transform.scale(pygame.image.load("example_tile_image4.png"), (tile_size,tile_size)),]
+
         self.tile_list = []
         for x_pos in range(self.columns):
             self.tile_list.append([])
             for y_pos in range(self.rows):
-                new_tile = mytile.MyTile(x_pos, y_pos, self.tile_size)
+                new_tile = mytile.MyTile(x_pos, y_pos, self.tile_size, self.possible_states)
                 self.tile_list[x_pos].append(new_tile)
 
         self.active_tiles = selected_tiles.SelectedTiles()
