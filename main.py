@@ -7,8 +7,8 @@ menu_width = 200 # screen width does not include menu_width
 menu_padding = 15 
 standard_button_height = 40
 
-rows = 20
-columns = 20
+rows = 50
+columns = 50
 
 tile_size_x = math.floor(default_screen_width/columns)
 tile_size_y = math.floor(default_screen_height/rows)
@@ -27,13 +27,17 @@ preferences = preferences.Preferences()
 
 button = pygame.Rect(game_board_x, screen_height - standard_button_height, menu_width, standard_button_height)
 font = pygame.font.SysFont("Calibri", 20)
-font_small = pygame.font.SysFont("Calibri", 14)
+font_small = pygame.font.SysFont("Calibri", 15)
 print_display = font.render("Print", True, (0,0,0))
 
 preferences_display = font.render("Preferences", True, (0,0,0))
 grid_x_toggle = pygame.Rect(game_board_x + menu_padding, 35, 15, 15)
+grid_x_toggled_on_rect = pygame.Rect(game_board_x + menu_padding + 4, 39, 7, 7)
 grid_x_label = font_small.render("Enable/Disable X grid",True, (0,0,0))
 
+grid_y_toggle = pygame.Rect(game_board_x + menu_padding, 60, 15, 15)
+grid_y_toggled_on_rect = pygame.Rect(game_board_x + menu_padding + 4, 64, 7, 7)
+grid_y_label = font_small.render("Enable/Disable Y grid",True, (0,0,0))
 
 while True:
     display_screen.fill((255,255,255))
@@ -43,8 +47,16 @@ while True:
     display_screen.blit(print_display, (button.centerx - print_display.get_width()/2, button.centery - print_display.get_height()/2))
 
     display_screen.blit(preferences_display, (game_board_x + menu_width/2 - preferences_display.get_width()/2, 10))
-    pygame.draw.rect(display_screen, [200, 200, 200], grid_x_toggle)
+    pygame.draw.rect(display_screen, [0, 0, 0], grid_x_toggle)
+    if preferences.get_x_grid_enabled():
+        pygame.draw.rect(display_screen, [200, 200, 200], grid_x_toggled_on_rect)
+    
+    pygame.draw.rect(display_screen, [0, 0, 0], grid_y_toggle)
+    if preferences.get_y_grid_enabled():
+        pygame.draw.rect(display_screen, [200, 200, 200], grid_y_toggled_on_rect)
+
     display_screen.blit(grid_x_label, (grid_x_toggle.right + 10, grid_x_toggle.top))
+    display_screen.blit(grid_y_label, (grid_y_toggle.right + 10, grid_y_toggle.top))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -70,6 +82,8 @@ while True:
                 print(map.get_tile_states())
             elif grid_x_toggle.collidepoint(event.pos):
                 preferences.toggle_x_grid_enabled()
+            elif grid_y_toggle.collidepoint(event.pos):
+                preferences.toggle_y_grid_enabled()
             else:
                 x,y = pygame.mouse.get_pos()
                 x_grid = math.floor(x/tile_size)
@@ -84,9 +98,9 @@ while True:
         for x_pos in range(columns+1):
             pygame.draw.line(display_screen, (255,255,255), (x_pos*tile_size,0), (x_pos*tile_size, screen_height))
 
-
-    for y_pos in range(rows+1):
-        pygame.draw.line(display_screen, (255,255,255), (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
+    if preferences.get_y_grid_enabled():
+        for y_pos in range(rows+1):
+            pygame.draw.line(display_screen, (255,255,255), (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
 
     pygame.draw.line(display_screen, (0,0,0), (map.active_tile_x*tile_size,map.active_tile_y*tile_size), ((map.active_tile_x+1)*tile_size,map.active_tile_y*tile_size))
     pygame.draw.line(display_screen, (0,0,0), (map.active_tile_x*tile_size,(map.active_tile_y+1)*tile_size), ((map.active_tile_x+1)*tile_size,(map.active_tile_y+1)*tile_size))
