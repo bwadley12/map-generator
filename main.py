@@ -22,9 +22,14 @@ screen_width = game_board_x + menu_width
 select_multiple = False
 pygame.init()
 
-display_screen = pygame.display.set_mode((screen_width, screen_height))
-map = map.Map(rows, columns, tile_size)
-preferences = preferences.Preferences()
+def setup_new_grid():
+    display_screen = pygame.display.set_mode((screen_width, screen_height))
+    new_map = map.Map(rows, columns, tile_size)
+    new_preferences = preferences.Preferences()
+
+    return display_screen, new_map, new_preferences
+
+display_screen, map, preferences = setup_new_grid()
 
 WHITE = pygame.Color(255,255,255)
 BLACK = pygame.Color(0,0,0)
@@ -45,6 +50,7 @@ grid_x_label = font_small.render("Enable/Disable X grid",True, BLACK)
 grid_y_toggle = pygame.Rect(game_board_x + menu_padding, 60, 15, 15)
 grid_y_toggled_on_rect = pygame.Rect(game_board_x + menu_padding + 4, 64, 7, 7)
 grid_y_label = font_small.render("Enable/Disable Y grid",True, BLACK)
+
 
 while True:
     display_screen.fill(WHITE)
