@@ -19,6 +19,7 @@ screen_height = rows*tile_size + 1
 
 screen_width = game_board_x + menu_width
 
+select_multiple = False
 pygame.init()
 
 display_screen = pygame.display.set_mode((screen_width, screen_height))
@@ -69,18 +70,27 @@ while True:
             sys.exit()
 
         elif event.type == pygame.KEYDOWN:
-            if(pygame.key.get_pressed()[pygame.K_w]):
+            keys_pressed = pygame.key.get_pressed()
+            
+            if(keys_pressed[pygame.K_LSHIFT]):
+                select_multiple = True
+
+            if(keys_pressed[pygame.K_w]):
                 map.tile_list[map.active_tile_x][map.active_tile_y].change_state(1)
-            elif(pygame.key.get_pressed()[pygame.K_s]):
+            elif(keys_pressed[pygame.K_s]):
                 map.tile_list[map.active_tile_x][map.active_tile_y].change_state(-1)
-            elif(pygame.key.get_pressed()[pygame.K_RIGHT]):
-                map.increment_active_tile(1,0)
-            elif(pygame.key.get_pressed()[pygame.K_LEFT]):
-                map.increment_active_tile(-1,0)
-            elif(pygame.key.get_pressed()[pygame.K_UP]):
-                map.increment_active_tile(0,-1)
-            elif(pygame.key.get_pressed()[pygame.K_DOWN]):
-                map.increment_active_tile(0,1)
+            elif(keys_pressed[pygame.K_RIGHT]):
+                map.increment_active_tile(1,0, select_multiple)
+            elif(keys_pressed[pygame.K_LEFT]):
+                map.increment_active_tile(-1,0, select_multiple)
+            elif(keys_pressed[pygame.K_UP]):
+                map.increment_active_tile(0,-1, select_multiple)
+            elif(keys_pressed[pygame.K_DOWN]):
+                map.increment_active_tile(0,1, select_multiple)
+        
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LSHIFT:
+                select_multiple = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button.collidepoint(event.pos):

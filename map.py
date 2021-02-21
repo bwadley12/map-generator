@@ -22,7 +22,10 @@ class Map():
         self.active_tile_x = x_grid
         self.active_tile_y = y_grid
 
-    def increment_active_tile(self, change_x, change_y):
+    def increment_active_tile(self, change_x, change_y, select_multiple):
+        if not select_multiple:
+            self.active_tiles.clear_list()
+
         if change_x != 0:
             if(change_x > 0):
                 if(self.active_tile_x < len(self.tile_list) - 1):
@@ -49,6 +52,7 @@ class Map():
 
         self.active_tiles.add_tile(self.tile_list[self.active_tile_x][self.active_tile_y])
 
+        print(self.active_tiles.selected_tiles)
 
     def get_active_tile(self):
         return self.active_tile_x, self.active_tile_y

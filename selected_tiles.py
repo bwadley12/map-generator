@@ -8,3 +8,6 @@ class SelectedTiles():
     
     def remove(self, tile):
         self.selected_tiles.remove(tile)
+    
+    def clear_list(self):
+        self.selected_tiles.clear()
