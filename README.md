@@ -1,2 +1,2 @@
 # map-generator
-Graphical interface for generating 2D map games
+Graphical interface for generating 2D tile maps
