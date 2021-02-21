@@ -19,6 +19,7 @@ screen_height = rows*tile_size + 1
 
 screen_width = game_board_x + menu_width
 
+select_multiple = False
 pygame.init()
 
 display_screen = pygame.display.set_mode((screen_width, screen_height))
@@ -28,6 +29,7 @@ preferences = preferences.Preferences()
 WHITE = pygame.Color(255,255,255)
 BLACK = pygame.Color(0,0,0)
 LIGHT_GRAY = pygame.Color(200,200,200)
+DARK_GRAY = pygame.Color(100,100,100)
 
 font = pygame.font.SysFont("Calibri", 20)
 font_small = pygame.font.SysFont("Calibri", 15)
@@ -69,18 +71,27 @@ while True:
             sys.exit()
 
         elif event.type == pygame.KEYDOWN:
-            if(pygame.key.get_pressed()[pygame.K_w]):
-                map.tile_list[map.active_tile_x][map.active_tile_y].change_state(1)
-            elif(pygame.key.get_pressed()[pygame.K_s]):
-                map.tile_list[map.active_tile_x][map.active_tile_y].change_state(-1)
-            elif(pygame.key.get_pressed()[pygame.K_RIGHT]):
-                map.increment_active_tile(1,0)
-            elif(pygame.key.get_pressed()[pygame.K_LEFT]):
-                map.increment_active_tile(-1,0)
-            elif(pygame.key.get_pressed()[pygame.K_UP]):
-                map.increment_active_tile(0,-1)
-            elif(pygame.key.get_pressed()[pygame.K_DOWN]):
-                map.increment_active_tile(0,1)
+            keys_pressed = pygame.key.get_pressed()
+            
+            if(keys_pressed[pygame.K_LSHIFT]):
+                select_multiple = True
+
+            if(keys_pressed[pygame.K_w]):
+                map.change_active_tile_states(1)
+            elif(keys_pressed[pygame.K_s]):
+                map.change_active_tile_states(-1)
+            elif(keys_pressed[pygame.K_RIGHT]):
+                map.increment_active_tile(1,0, select_multiple)
+            elif(keys_pressed[pygame.K_LEFT]):
+                map.increment_active_tile(-1,0, select_multiple)
+            elif(keys_pressed[pygame.K_UP]):
+                map.increment_active_tile(0,-1, select_multiple)
+            elif(keys_pressed[pygame.K_DOWN]):
+                map.increment_active_tile(0,1, select_multiple)
+        
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LSHIFT:
+                select_multiple = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button.collidepoint(event.pos):
@@ -95,7 +106,7 @@ while True:
                 y_grid = math.floor(y/tile_size)
                 
                 if x_grid < columns: 
-                    map.set_active_tile(x_grid, y_grid)
+                    map.set_active_tile(x_grid, y_grid, select_multiple)
 
     for y_pos in range(rows):
         for x_pos in range(columns):
@@ -108,6 +119,13 @@ while True:
     if preferences.get_x_grid_enabled():
         for y_pos in range(rows+1):
             pygame.draw.line(display_screen, WHITE, (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
+
+    for tile in map.active_tiles.get_tiles():
+        pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size))
+        pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
+        pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, (tile.y_pos)*tile_size), (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size))
+        pygame.draw.line(display_screen, DARK_GRAY, ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
+
 
     pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,map.active_tile_y*tile_size), ((map.active_tile_x+1)*tile_size,map.active_tile_y*tile_size))
     pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,(map.active_tile_y+1)*tile_size), ((map.active_tile_x+1)*tile_size,(map.active_tile_y+1)*tile_size))
