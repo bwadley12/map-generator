@@ -1,10 +1,12 @@
 
+
 class SelectedTiles():
     def __init__(self):
         self.selected_tiles = []
 
-    def add_tile(self, tile):
-        self.selected_tiles.append(tile)
+    def add_tile(self, tile_to_add):
+        if not tile_to_add in self.selected_tiles:
+            self.selected_tiles.append(tile_to_add)
     
     def remove(self, tile):
         self.selected_tiles.remove(tile)

@@ -53,7 +53,7 @@ class Map():
                     self.active_tile_y += change_y
                 else:
                     self.active_tile_y = len(self.tile_list[0]) - 1
-
+                    
         self.active_tiles.add_tile(self.tile_list[self.active_tile_x][self.active_tile_y])
 
     def get_active_tile(self):

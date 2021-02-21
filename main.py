@@ -79,7 +79,7 @@ while True:
             if(keys_pressed[pygame.K_w]):
                 map.change_active_tile_states(1)
             elif(keys_pressed[pygame.K_s]):
-                map.change_active_tile_states(1)
+                map.change_active_tile_states(-1)
             elif(keys_pressed[pygame.K_RIGHT]):
                 map.increment_active_tile(1,0, select_multiple)
             elif(keys_pressed[pygame.K_LEFT]):
