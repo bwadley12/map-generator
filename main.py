@@ -29,6 +29,7 @@ preferences = preferences.Preferences()
 WHITE = pygame.Color(255,255,255)
 BLACK = pygame.Color(0,0,0)
 LIGHT_GRAY = pygame.Color(200,200,200)
+DARK_GRAY = pygame.Color(100,100,100)
 
 font = pygame.font.SysFont("Calibri", 20)
 font_small = pygame.font.SysFont("Calibri", 15)
@@ -76,9 +77,9 @@ while True:
                 select_multiple = True
 
             if(keys_pressed[pygame.K_w]):
-                map.tile_list[map.active_tile_x][map.active_tile_y].change_state(1)
+                map.change_active_tile_states(1)
             elif(keys_pressed[pygame.K_s]):
-                map.tile_list[map.active_tile_x][map.active_tile_y].change_state(-1)
+                map.change_active_tile_states(1)
             elif(keys_pressed[pygame.K_RIGHT]):
                 map.increment_active_tile(1,0, select_multiple)
             elif(keys_pressed[pygame.K_LEFT]):
@@ -118,6 +119,13 @@ while True:
     if preferences.get_x_grid_enabled():
         for y_pos in range(rows+1):
             pygame.draw.line(display_screen, WHITE, (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
+
+    for tile in map.active_tiles.get_tiles():
+        pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size))
+        pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
+        pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, (tile.y_pos)*tile_size), (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size))
+        pygame.draw.line(display_screen, DARK_GRAY, ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
+
 
     pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,map.active_tile_y*tile_size), ((map.active_tile_x+1)*tile_size,map.active_tile_y*tile_size))
     pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,(map.active_tile_y+1)*tile_size), ((map.active_tile_x+1)*tile_size,(map.active_tile_y+1)*tile_size))

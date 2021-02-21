@@ -26,9 +26,6 @@ class Map():
         self.active_tile_y = y_grid
         self.active_tiles.add_tile(self.tile_list[self.active_tile_x][self.active_tile_y])
 
-        print(self.active_tiles.selected_tiles)
-
-
     def increment_active_tile(self, change_x, change_y, select_multiple):
         if not select_multiple:
             self.active_tiles.clear_list()
@@ -59,8 +56,6 @@ class Map():
 
         self.active_tiles.add_tile(self.tile_list[self.active_tile_x][self.active_tile_y])
 
-        print(self.active_tiles.selected_tiles)
-
     def get_active_tile(self):
         return self.active_tile_x, self.active_tile_y
 
@@ -73,3 +68,7 @@ class Map():
             states += "\n"
     
         return states
+
+    def change_active_tile_states(self, change_direction):
+        for tile in self.active_tiles.get_tiles():
+            tile.change_state(change_direction)

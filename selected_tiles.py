@@ -11,3 +11,6 @@ class SelectedTiles():
     
     def clear_list(self):
         self.selected_tiles.clear()
+
+    def get_tiles(self):
+        return self.selected_tiles
