@@ -13,29 +13,27 @@ class InputBox():
         self.color = Inactive_box_color
         self.inner_text = inner_text
         self.text_label = text_label
-        self.text_surface = Font.render(self.inner_text, True, BLACK)
         self.active = False
+        self.text_label_surface = Font.render(self.text_label, True, BLACK)
+        self.update()
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 if not self.active:
                     self.inner_text = ""
-                    #self.text_surface = Font.render(self.inner_text, True, BLACK)
                     self.active = True
             else:
                 self.active = False
         elif event.type == pygame.KEYDOWN:
             if self.active:
-                keys_pressed = pygame.key.get_pressed()
-
                 self.inner_text += event.unicode
                 
         self.update()
 
     def update(self):
-        self.text_surface = Font.render(self.inner_text, True, BLACK)
-        
+        self.inner_text_surface = Font.render(self.inner_text, True, BLACK)
+
         if self.active:
             self.color = Active_box_color 
         else:
@@ -43,6 +41,7 @@ class InputBox():
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
-        screen.blit(self.text_surface, (self.rect.x + 5, self.rect.y + 5))
+        screen.blit(self.inner_text_surface, (self.rect.x + 5, self.rect.y + 5))
+        screen.blit(self.text_label_surface, (self.rect.x + self.rect.width + 5,self.rect.y + 5))
         
 
