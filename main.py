@@ -1,5 +1,5 @@
 import pygame, sys, math
-import map, preferences
+import map, preferences, input_box
 
 default_screen_height = 750
 default_screen_width = 1000
@@ -51,6 +51,7 @@ grid_y_toggle = pygame.Rect(game_board_x + menu_padding, 60, 15, 15)
 grid_y_toggled_on_rect = pygame.Rect(game_board_x + menu_padding + 4, 64, 7, 7)
 grid_y_label = font_small.render("Enable/Disable Y grid",True, BLACK)
 
+input_box_1 = input_box.InputBox(game_board_x + menu_padding, 75, 100, 30, str(rows), "Rows")
 
 while True:
     display_screen.fill(WHITE)
@@ -70,6 +71,8 @@ while True:
 
     display_screen.blit(grid_x_label, (grid_x_toggle.right + 10, grid_x_toggle.top))
     display_screen.blit(grid_y_label, (grid_y_toggle.right + 10, grid_y_toggle.top))
+
+    input_box_1.draw(display_screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -113,6 +116,9 @@ while True:
                 
                 if x_grid < columns: 
                     map.set_active_tile(x_grid, y_grid, select_multiple)
+
+        input_box_1.handle_event(event)
+
 
     for y_pos in range(rows):
         for x_pos in range(columns):
