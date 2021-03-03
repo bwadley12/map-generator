@@ -1,5 +1,5 @@
 import pygame, sys, math
-import map, preferences
+import map, preferences, input_box
 
 default_screen_height = 750
 default_screen_width = 1000
@@ -10,21 +10,25 @@ standard_button_height = 40
 rows = 50
 columns = 50
 
-tile_size_x = math.floor(default_screen_width/columns)
-tile_size_y = math.floor(default_screen_height/rows)
-tile_size = min(tile_size_x, tile_size_y)
-
-game_board_x = columns*tile_size
-screen_height = rows*tile_size + 1
-
-screen_width = game_board_x + menu_width
-
 select_multiple = False
 pygame.init()
 
-display_screen = pygame.display.set_mode((screen_width, screen_height))
-map = map.Map(rows, columns, tile_size)
-preferences = preferences.Preferences()
+def setup_new_grid():
+    _tile_size_x = math.floor(default_screen_width/columns)
+    _tile_size_y = math.floor(default_screen_height/rows)
+    _tile_size = min(_tile_size_x, _tile_size_y)
+
+    _game_board_x = columns*_tile_size
+    _screen_height = rows*_tile_size + 1
+
+    _screen_width = _game_board_x + menu_width
+    _display_screen = pygame.display.set_mode((_screen_width, _screen_height))
+    _map = map.Map(rows, columns, _tile_size)
+    _preferences = preferences.Preferences()
+
+    return _display_screen, _map, _preferences, _tile_size, _game_board_x, _screen_height, _screen_width
+
+display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
 
 WHITE = pygame.Color(255,255,255)
 BLACK = pygame.Color(0,0,0)
@@ -46,6 +50,10 @@ grid_y_toggle = pygame.Rect(game_board_x + menu_padding, 60, 15, 15)
 grid_y_toggled_on_rect = pygame.Rect(game_board_x + menu_padding + 4, 64, 7, 7)
 grid_y_label = font_small.render("Enable/Disable Y grid",True, BLACK)
 
+input_box_1 = input_box.InputBox(game_board_x + menu_padding, 85, 30, 20, str(rows), "Rows")
+input_box_2 = input_box.InputBox(game_board_x + menu_padding, 115, 30, 20, str(columns), "Columns")
+submit_screensize_button = pygame.Rect(game_board_x, 145, menu_width, standard_button_height)
+
 while True:
     display_screen.fill(WHITE)
 
@@ -55,15 +63,19 @@ while True:
 
     display_screen.blit(preferences_display, (game_board_x + menu_width/2 - preferences_display.get_width()/2, 10))
     pygame.draw.rect(display_screen, BLACK, grid_x_toggle)
-    if preferences.get_x_grid_enabled():
+    if active_preferences.get_x_grid_enabled():
         pygame.draw.rect(display_screen, LIGHT_GRAY, grid_x_toggled_on_rect)
     
     pygame.draw.rect(display_screen, BLACK, grid_y_toggle)
-    if preferences.get_y_grid_enabled():
+    if active_preferences.get_y_grid_enabled():
         pygame.draw.rect(display_screen, LIGHT_GRAY, grid_y_toggled_on_rect)
 
     display_screen.blit(grid_x_label, (grid_x_toggle.right + 10, grid_x_toggle.top))
     display_screen.blit(grid_y_label, (grid_y_toggle.right + 10, grid_y_toggle.top))
+
+    input_box_1.draw(display_screen)
+    input_box_2.draw(display_screen)
+    pygame.draw.rect(display_screen, LIGHT_GRAY, submit_screensize_button)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -77,17 +89,17 @@ while True:
                 select_multiple = True
 
             if(keys_pressed[pygame.K_w]):
-                map.change_active_tile_states(1)
+                active_map.change_active_tile_states(1)
             elif(keys_pressed[pygame.K_s]):
-                map.change_active_tile_states(-1)
+                active_map.change_active_tile_states(-1)
             elif(keys_pressed[pygame.K_RIGHT]):
-                map.increment_active_tile(1,0, select_multiple)
+                active_map.increment_active_tile(1,0, select_multiple)
             elif(keys_pressed[pygame.K_LEFT]):
-                map.increment_active_tile(-1,0, select_multiple)
+                active_map.increment_active_tile(-1,0, select_multiple)
             elif(keys_pressed[pygame.K_UP]):
-                map.increment_active_tile(0,-1, select_multiple)
+                active_map.increment_active_tile(0,-1, select_multiple)
             elif(keys_pressed[pygame.K_DOWN]):
-                map.increment_active_tile(0,1, select_multiple)
+                active_map.increment_active_tile(0,1, select_multiple)
         
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LSHIFT:
@@ -95,42 +107,52 @@ while True:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button.collidepoint(event.pos):
-                print(map.get_tile_states())
+                print(active_map.get_tile_states())
+            elif submit_screensize_button.collidepoint(event.pos):
+                rows = input_box_1.get_input()
+                columns = input_box_2.get_input()
+                display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
             elif grid_x_toggle.collidepoint(event.pos):
-                preferences.toggle_x_grid_enabled()
+                active_preferences.toggle_x_grid_enabled()
             elif grid_y_toggle.collidepoint(event.pos):
-                preferences.toggle_y_grid_enabled()
+                active_preferences.toggle_y_grid_enabled()
             else:
                 x,y = pygame.mouse.get_pos()
                 x_grid = math.floor(x/tile_size)
                 y_grid = math.floor(y/tile_size)
                 
                 if x_grid < columns: 
-                    map.set_active_tile(x_grid, y_grid, select_multiple)
+                    active_map.set_active_tile(x_grid, y_grid, select_multiple)
+
+                else:
+                    active_map.active_tiles.clear_list()
+
+        input_box_1.handle_event(event)
+        input_box_2.handle_event(event)
 
     for y_pos in range(rows):
         for x_pos in range(columns):
-            display_screen.blit(map.tile_list[x_pos][y_pos].image, map.tile_list[x_pos][y_pos].rect)
+            display_screen.blit(active_map.tile_list[x_pos][y_pos].image, active_map.tile_list[x_pos][y_pos].rect)
 
-    if preferences.get_y_grid_enabled():
+    if active_preferences.get_y_grid_enabled():
         for x_pos in range(columns+1):
             pygame.draw.line(display_screen, WHITE, (x_pos*tile_size,0), (x_pos*tile_size, screen_height))
 
-    if preferences.get_x_grid_enabled():
+    if active_preferences.get_x_grid_enabled():
         for y_pos in range(rows+1):
             pygame.draw.line(display_screen, WHITE, (0,tile_size*y_pos), (game_board_x, tile_size*y_pos))
 
-    for tile in map.active_tiles.get_tiles():
+    for tile in active_map.active_tiles.get_tiles():
         pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size))
         pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
         pygame.draw.line(display_screen, DARK_GRAY, (tile.x_pos*tile_size, (tile.y_pos)*tile_size), (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size))
         pygame.draw.line(display_screen, DARK_GRAY, ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
 
 
-    pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,map.active_tile_y*tile_size), ((map.active_tile_x+1)*tile_size,map.active_tile_y*tile_size))
-    pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,(map.active_tile_y+1)*tile_size), ((map.active_tile_x+1)*tile_size,(map.active_tile_y+1)*tile_size))
+    pygame.draw.line(display_screen, BLACK, (active_map.active_tile_x*tile_size,active_map.active_tile_y*tile_size), ((active_map.active_tile_x+1)*tile_size,active_map.active_tile_y*tile_size))
+    pygame.draw.line(display_screen, BLACK, (active_map.active_tile_x*tile_size,(active_map.active_tile_y+1)*tile_size), ((active_map.active_tile_x+1)*tile_size,(active_map.active_tile_y+1)*tile_size))
 
-    pygame.draw.line(display_screen, BLACK, (map.active_tile_x*tile_size,map.active_tile_y*tile_size), (map.active_tile_x*tile_size,(map.active_tile_y+1)*tile_size))
-    pygame.draw.line(display_screen, BLACK, ((map.active_tile_x+1)*tile_size,map.active_tile_y*tile_size), ((map.active_tile_x+1)*tile_size,(map.active_tile_y+1)*tile_size))
+    pygame.draw.line(display_screen, BLACK, (active_map.active_tile_x*tile_size,active_map.active_tile_y*tile_size), (active_map.active_tile_x*tile_size,(active_map.active_tile_y+1)*tile_size))
+    pygame.draw.line(display_screen, BLACK, ((active_map.active_tile_x+1)*tile_size,active_map.active_tile_y*tile_size), ((active_map.active_tile_x+1)*tile_size,(active_map.active_tile_y+1)*tile_size))
 
     pygame.display.update()
