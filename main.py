@@ -10,26 +10,25 @@ standard_button_height = 40
 rows = 50
 columns = 50
 
-tile_size_x = math.floor(default_screen_width/columns)
-tile_size_y = math.floor(default_screen_height/rows)
-tile_size = min(tile_size_x, tile_size_y)
-
-game_board_x = columns*tile_size
-screen_height = rows*tile_size + 1
-
-screen_width = game_board_x + menu_width
-
 select_multiple = False
 pygame.init()
 
 def setup_new_grid():
-    display_screen = pygame.display.set_mode((screen_width, screen_height))
-    new_map = map.Map(rows, columns, tile_size)
-    new_preferences = preferences.Preferences()
+    _tile_size_x = math.floor(default_screen_width/columns)
+    _tile_size_y = math.floor(default_screen_height/rows)
+    _tile_size = min(_tile_size_x, _tile_size_y)
 
-    return display_screen, new_map, new_preferences
+    _game_board_x = columns*_tile_size
+    _screen_height = rows*_tile_size + 1
 
-display_screen, active_map, active_preferences = setup_new_grid()
+    _screen_width = _game_board_x + menu_width
+    _display_screen = pygame.display.set_mode((_screen_width, _screen_height))
+    _map = map.Map(rows, columns, _tile_size)
+    _preferences = preferences.Preferences()
+
+    return _display_screen, _map, _preferences, _tile_size, _game_board_x, _screen_height, _screen_width
+
+display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
 
 WHITE = pygame.Color(255,255,255)
 BLACK = pygame.Color(0,0,0)
@@ -110,7 +109,9 @@ while True:
             if button.collidepoint(event.pos):
                 print(active_map.get_tile_states())
             elif submit_screensize_button.collidepoint(event.pos):
-                display_screen, active_map, active_preferences = setup_new_grid()
+                rows = input_box_1.get_input()
+                columns = input_box_2.get_input()
+                display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
             elif grid_x_toggle.collidepoint(event.pos):
                 active_preferences.toggle_x_grid_enabled()
             elif grid_y_toggle.collidepoint(event.pos):

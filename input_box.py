@@ -1,4 +1,5 @@
 import pygame
+import menu_item
 
 pygame.init()
 
@@ -7,7 +8,7 @@ Active_box_color = pygame.Color(150,150,255)
 BLACK = pygame.Color(0,0,0)
 Font = pygame.font.SysFont("Calibri", 14)
 
-class InputBox():
+class InputBox(menu_item.MenuItem):
     def __init__(self,x,y,length,width,inner_text, text_label):
         self.rect = pygame.Rect(x,y,length,width)
         self.color = Inactive_box_color
@@ -43,5 +44,8 @@ class InputBox():
         pygame.draw.rect(screen, self.color, self.rect)
         screen.blit(self.inner_text_surface, (self.rect.x + 5, self.rect.y + 5))
         screen.blit(self.text_label_surface, (self.rect.x + self.rect.width + 5,self.rect.y + 5))
+
+    def get_input(self):
+        return int(self.inner_text)
         
 
