@@ -25,7 +25,7 @@ def setup_new_grid():
     _display_screen = pygame.display.set_mode((_screen_width, _screen_height))
     _map = map.Map(rows, columns, _tile_size)
     _preferences = preferences.Preferences()
-    _menu = menu_items.Menu(_game_board_x, menu_width, _screen_height, rows, columns)
+    _menu = menu_items.Menu(_game_board_x, menu_width, _screen_height, rows, columns, _map.get_tile_states())
 
     return _display_screen, _map, _preferences, _tile_size, _game_board_x, _screen_height, _screen_width, _menu
 
@@ -103,8 +103,10 @@ while True:
 
             if(keys_pressed[pygame.K_w]):
                 active_map.change_active_tile_states(1)
+                menu.update_grid(active_map.get_tile_states())
             elif(keys_pressed[pygame.K_s]):
                 active_map.change_active_tile_states(-1)
+                menu.update_grid(active_map.get_tile_states())
             elif(keys_pressed[pygame.K_RIGHT]):
                 active_map.increment_active_tile(1,0, select_multiple)
             elif(keys_pressed[pygame.K_LEFT]):

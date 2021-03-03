@@ -1,4 +1,5 @@
 import pygame
+import IMenuItem
 
 pygame.init()
 
@@ -7,9 +8,9 @@ Active_box_color = pygame.Color(150,150,255)
 BLACK = pygame.Color(0,0,0)
 Font = pygame.font.SysFont("Calibri", 14)
 
-class InputBox:
-    def __init__(self,x,y,length,width,inner_text, text_label):
-        self.rect = pygame.Rect(x,y,length,width)
+class InputBox(IMenuItem.IMenuItem):
+    def __init__(self,x,y,height,width,inner_text, text_label):
+        self.rect = pygame.Rect(x,y,height,width)
         self.color = Inactive_box_color
         self.inner_text = inner_text
         self.text_label = text_label
