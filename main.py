@@ -1,5 +1,5 @@
 import pygame, sys, math
-import map, preferences, input_box
+import map, preferences, menu_items
 
 default_screen_height = 750
 default_screen_width = 1000
@@ -25,10 +25,11 @@ def setup_new_grid():
     _display_screen = pygame.display.set_mode((_screen_width, _screen_height))
     _map = map.Map(rows, columns, _tile_size)
     _preferences = preferences.Preferences()
+    _menu = menu_items.Menu(_game_board_x, menu_width, _screen_height, rows, columns)
 
-    return _display_screen, _map, _preferences, _tile_size, _game_board_x, _screen_height, _screen_width
+    return _display_screen, _map, _preferences, _tile_size, _game_board_x, _screen_height, _screen_width, _menu
 
-display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
+display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width, menu = setup_new_grid()
 
 WHITE = pygame.Color(255,255,255)
 BLACK = pygame.Color(0,0,0)
@@ -38,7 +39,8 @@ DARK_GRAY = pygame.Color(100,100,100)
 font = pygame.font.SysFont("Calibri", 20)
 font_small = pygame.font.SysFont("Calibri", 15)
 
-button = pygame.Rect(game_board_x, screen_height - standard_button_height, menu_width, standard_button_height)
+
+"""button = pygame.Rect(game_board_x, screen_height - standard_button_height, menu_width, standard_button_height)
 print_display = font.render("Print", True, BLACK)
 
 preferences_display = font.render("Preferences", True, BLACK)
@@ -53,11 +55,16 @@ grid_y_label = font_small.render("Enable/Disable Y grid",True, BLACK)
 input_box_1 = input_box.InputBox(game_board_x + menu_padding, 85, 30, 20, str(rows), "Rows")
 input_box_2 = input_box.InputBox(game_board_x + menu_padding, 115, 30, 20, str(columns), "Columns")
 submit_screensize_button = pygame.Rect(game_board_x, 145, menu_width, standard_button_height)
-
+"""
 while True:
     display_screen.fill(WHITE)
 
     # building menu
+
+    for item in menu.get_menu():
+        item.draw(display_screen)
+
+    """
     pygame.draw.rect(display_screen, LIGHT_GRAY, button)
     display_screen.blit(print_display, (button.centerx - print_display.get_width()/2, button.centery - print_display.get_height()/2))
 
@@ -76,8 +83,14 @@ while True:
     input_box_1.draw(display_screen)
     input_box_2.draw(display_screen)
     pygame.draw.rect(display_screen, LIGHT_GRAY, submit_screensize_button)
+    """
+
 
     for event in pygame.event.get():
+
+        for item in menu.get_menu():
+            item.handle_event(event)
+
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -106,29 +119,29 @@ while True:
                 select_multiple = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if button.collidepoint(event.pos):
-                print(active_map.get_tile_states())
-            elif submit_screensize_button.collidepoint(event.pos):
-                rows = input_box_1.get_input()
-                columns = input_box_2.get_input()
-                display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
-            elif grid_x_toggle.collidepoint(event.pos):
-                active_preferences.toggle_x_grid_enabled()
-            elif grid_y_toggle.collidepoint(event.pos):
-                active_preferences.toggle_y_grid_enabled()
+            #if button.collidepoint(event.pos):
+            #    print(active_map.get_tile_states())
+            #"""elif submit_screensize_button.collidepoint(event.pos):
+            #    rows = input_box_1.get_input()
+            #    columns = input_box_2.get_input()
+            #    display_screen, active_map, active_preferences, tile_size, game_board_x, screen_height, screen_width = setup_new_grid()
+            #elif grid_x_toggle.collidepoint(event.pos):
+            #   active_preferences.toggle_x_grid_enabled()
+            #elif grid_y_toggle.collidepoint(event.pos):
+            #    active_preferences.toggle_y_grid_enabled()"""
+            #else:
+            x,y = pygame.mouse.get_pos()
+            x_grid = math.floor(x/tile_size)
+            y_grid = math.floor(y/tile_size)
+            
+            if x_grid < columns: 
+                active_map.set_active_tile(x_grid, y_grid, select_multiple)
+
             else:
-                x,y = pygame.mouse.get_pos()
-                x_grid = math.floor(x/tile_size)
-                y_grid = math.floor(y/tile_size)
-                
-                if x_grid < columns: 
-                    active_map.set_active_tile(x_grid, y_grid, select_multiple)
+                active_map.active_tiles.clear_list()
 
-                else:
-                    active_map.active_tiles.clear_list()
-
-        input_box_1.handle_event(event)
-        input_box_2.handle_event(event)
+        #input_box_1.handle_event(event)
+        #input_box_2.handle_event(event)
 
     for y_pos in range(rows):
         for x_pos in range(columns):
