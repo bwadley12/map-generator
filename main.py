@@ -10,6 +10,7 @@ rows = 50
 columns = 50
 
 select_multiple = False
+mouse_clicked = False
 pygame.init()
 
 def setup_new_grid():
@@ -79,10 +80,18 @@ while True:
             y_grid = math.floor(y/tile_size)
             
             if x_grid < columns: 
+                mouse_clicked = True
                 active_map.set_active_tile(x_grid, y_grid, select_multiple)
 
             else:
                 active_map.active_tiles.clear_list()
+        
+        elif event.type == pygame.MOUSEBUTTONUP:
+            mouse_clicked = False
+
+        elif event.type == pygame.MOUSEMOTION:
+            if mouse_clicked:
+                print("mouse is currently clicked")
 
     # Update the display screen
     display_screen.fill(WHITE)
