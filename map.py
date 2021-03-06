@@ -1,6 +1,5 @@
 import pygame
-import mytile
-import selected_tiles
+import mytile, selected_tiles
 
 class Map():
     def __init__(self, rows, columns, tile_size):

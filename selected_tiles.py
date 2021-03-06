@@ -1,5 +1,3 @@
-
-
 class SelectedTiles():
     def __init__(self):
         self.selected_tiles = []

@@ -1,5 +1,3 @@
-import pygame
-
 class MyTile():
     def __init__(self, x_pos, y_pos, tile_size, image_list):
         self.possible_states = image_list
