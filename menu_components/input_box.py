@@ -1,21 +1,22 @@
 import pygame
-import menu_item
+from menu_components import IMenuItem
 
 pygame.init()
 
 Inactive_box_color = pygame.Color(200,200,255)
 Active_box_color = pygame.Color(150,150,255)
 BLACK = pygame.Color(0,0,0)
-Font = pygame.font.SysFont("Calibri", 14)
+Font = pygame.font.SysFont("Calibri", 15)
 
-class InputBox(menu_item.MenuItem):
-    def __init__(self,x,y,length,width,inner_text, text_label):
-        self.rect = pygame.Rect(x,y,length,width)
+class InputBox(IMenuItem.IMenuItem):
+    def __init__(self,x,y,height,width,inner_text, text_label, element_height):
+        self.rect = pygame.Rect(x,y,height,width)
         self.color = Inactive_box_color
         self.inner_text = inner_text
         self.text_label = text_label
         self.active = False
         self.text_label_surface = Font.render(self.text_label, True, BLACK)
+        self.element_height = element_height
         self.update()
 
     def handle_event(self, event):
@@ -42,10 +43,8 @@ class InputBox(menu_item.MenuItem):
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
-        screen.blit(self.inner_text_surface, (self.rect.x + 5, self.rect.y + 5))
-        screen.blit(self.text_label_surface, (self.rect.x + self.rect.width + 5,self.rect.y + 5))
+        screen.blit(self.inner_text_surface, (self.rect.centerx - self.inner_text_surface.get_width()/2, self.rect.centery - self.inner_text_surface.get_height()/2))
+        screen.blit(self.text_label_surface, (self.rect.x + self.rect.width + 5,self.rect.y + self.element_height/2 - self.text_label_surface.get_height()/2))
 
     def get_input(self):
         return int(self.inner_text)
-        
-
