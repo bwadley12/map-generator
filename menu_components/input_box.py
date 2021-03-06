@@ -33,7 +33,7 @@ class InputBox(IMenuItem.IMenuItem):
             if self.active:
                 keys_pressed = pygame.key.get_pressed()
 
-                if event.unicode in "1234567890" and len(self.inner_text) < 3:
+                if event.unicode in "1234567890" and int(self.inner_text + event.unicode) < 250:
                     self.inner_text += event.unicode
                 elif keys_pressed[pygame.K_BACKSPACE]:
                     self.inner_text = self.inner_text[:-1]
