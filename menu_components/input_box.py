@@ -23,13 +23,20 @@ class InputBox(IMenuItem.IMenuItem):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 if not self.active:
-                    self.inner_text = ""
+                    self.temp_inner_text = self.inner_text
                     self.active = True
             else:
+                if self.inner_text == "":
+                    self.inner_text = self.temp_inner_text
                 self.active = False
         elif event.type == pygame.KEYDOWN:
             if self.active:
-                self.inner_text += event.unicode
+                keys_pressed = pygame.key.get_pressed()
+
+                if event.unicode in "1234567890" and len(self.inner_text) < 3:
+                    self.inner_text += event.unicode
+                elif keys_pressed[pygame.K_BACKSPACE]:
+                    self.inner_text = self.inner_text[:-1]
                 
         self.update()
 
