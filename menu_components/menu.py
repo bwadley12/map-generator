@@ -10,6 +10,9 @@ DARK_GRAY = pygame.Color(100,100,100)
 
 font = pygame.font.SysFont("Calibri", 20)
 font_small = pygame.font.SysFont("Calibri", 15)
+element_padding = 2
+element_height = 30
+t_element_height = element_padding + element_height
 
 class Menu:
     def __init__(self, x, width, height, rows, columns, grid, tile_size):
@@ -19,21 +22,20 @@ class Menu:
         self.height = height
         self.rows = rows
         self.columns = columns
-        self.element_height = 30
 
         # Reset area
-        self.menu_items.append(labels.LargeLabel(self.x, len(self.menu_items)*self.element_height, "Reset Grid", font, BLACK, self.element_height))
-        self.menu_items.append(input_box.InputBox(self.x, len(self.menu_items)*self.element_height, self.element_height, self.element_height, str(rows), "Rows", self.element_height))
-        self.menu_items.append(input_box.InputBox(self.x, len(self.menu_items)*self.element_height, self.element_height, self.element_height, str(columns), "Columns", self.element_height))
-        self.menu_items.append(buttons.ResetButton(self.x, len(self.menu_items)*self.element_height, self.element_height,self.width, LIGHT_GRAY, grid, "Reset", font, BLACK))
+        self.menu_items.append(labels.LargeLabel(self.x, len(self.menu_items)*t_element_height, "Reset Grid", font, BLACK, element_height))
+        self.menu_items.append(input_box.InputBox(self.x, len(self.menu_items)*t_element_height, element_height, element_height, str(rows), "Rows", element_height))
+        self.menu_items.append(input_box.InputBox(self.x, len(self.menu_items)*t_element_height, element_height, element_height, str(columns), "Columns", element_height))
+        self.menu_items.append(buttons.ResetButton(self.x, len(self.menu_items)*t_element_height, element_height,self.width, LIGHT_GRAY, grid, "Reset", font, BLACK))
 
         # Preferences area
-        self.menu_items.append(labels.LargeLabel(self.x, len(self.menu_items)*self.element_height, "Preferences", font, BLACK, self.element_height))
-        self.menu_items.append(checkbox.Checkbox_Grid_X(self.x, len(self.menu_items)*self.element_height, self.element_height, self.element_height - 16, LIGHT_GRAY, BLACK, "Enable X Grid", BLACK, font_small, self.element_height, self.rows, self.x, WHITE, tile_size))
-        self.menu_items.append(checkbox.Checkbox_Grid_Y(self.x, len(self.menu_items)*self.element_height, self.element_height, self.element_height - 16, LIGHT_GRAY, BLACK, "Enable Y Grid", BLACK, font_small, self.element_height, self.columns, self.height, WHITE, tile_size))
+        self.menu_items.append(labels.LargeLabel(self.x, len(self.menu_items)*t_element_height, "Preferences", font, BLACK, element_height))
+        self.menu_items.append(checkbox.Checkbox_Grid_X(self.x, len(self.menu_items)*t_element_height, element_height, element_height - 16, LIGHT_GRAY, BLACK, "Enable X Grid", BLACK, font_small, element_height, self.rows, self.x, WHITE, tile_size))
+        self.menu_items.append(checkbox.Checkbox_Grid_Y(self.x, len(self.menu_items)*t_element_height, element_height, element_height - 16, LIGHT_GRAY, BLACK, "Enable Y Grid", BLACK, font_small, element_height, self.columns, self.height, WHITE, tile_size))
 
         # Output area
-        self.menu_items.append(buttons.PrintButton(self.x, len(self.menu_items)*self.element_height, self.element_height,self.width, LIGHT_GRAY, grid, "Print", font, BLACK))
+        self.menu_items.append(buttons.PrintButton(self.x, len(self.menu_items)*t_element_height, element_height,self.width, LIGHT_GRAY, grid, "Print", font, BLACK))
 
     def get_menu(self):
         return self.menu_items    

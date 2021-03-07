@@ -1,4 +1,4 @@
-import pygame
+import pygame, math
 import mytile, selected_tiles
 
 class Map():
@@ -61,7 +61,7 @@ class Map():
         self.active_tiles.add_tile(self.tile_list[self.active_tile_x][self.active_tile_y])
 
     def get_active_tile(self):
-        return self.active_tile_x, self.active_tile_y
+        return self.tile_list[self.active_tile_x][self.active_tile_y]
 
     def get_tile_states(self):
         states = ""
@@ -76,3 +76,24 @@ class Map():
     def change_active_tile_states(self, change_direction):
         for tile in self.active_tiles.get_tiles():
             tile.change_state(change_direction)
+    
+    def add_from_mouse_drag(self, x_start, y_start, x_end, y_end, box_select):
+        if box_select:
+            self.active_tiles.clear_list()
+
+            starting_pos_x = max(min(x_start, x_end), 0)
+            ending_pos_x = min(max(x_start, x_end), self.columns - 1)
+            starting_pos_y = max(min(y_start, y_end), 0)
+            ending_pos_y = min(max(y_start, y_end), self.rows - 1)
+
+            for x_pos in range(starting_pos_x, ending_pos_x + 1):
+                for y_pos in range(starting_pos_y, ending_pos_y + 1):
+                    self.active_tiles.add_tile(self.tile_list[x_pos][y_pos])
+
+            self.set_active_tile(ending_pos_x, ending_pos_y, True)
+
+        else:
+            if x_end < self.columns and y_end < self.rows:
+                self.set_active_tile(x_end, y_end, True)
+
+    

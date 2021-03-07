@@ -11,6 +11,13 @@ columns = 50
 
 select_multiple = False
 mouse_clicked = False
+box_select = False
+
+x_start = 0
+y_start = 0
+x_start_grid = 0
+y_start_grid = 0
+
 pygame.init()
 
 def setup_new_grid():
@@ -69,10 +76,18 @@ while True:
                 active_map.increment_active_tile(0,-1, select_multiple)
             elif(keys_pressed[pygame.K_DOWN]):
                 active_map.increment_active_tile(0,1, select_multiple)
+            elif(keys_pressed[pygame.K_LCTRL]):
+                starting_tile = active_map.get_active_tile()
+                x_start, y_start = pygame.mouse.get_pos() 
+                x_start_grid = math.floor(x_start/tile_size)
+                y_start_grid = math.floor(y_start/tile_size)
+                box_select = True
         
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LSHIFT:
                 select_multiple = False
+            elif event.key == pygame.K_LCTRL:
+                box_select = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
@@ -91,7 +106,11 @@ while True:
 
         elif event.type == pygame.MOUSEMOTION:
             if mouse_clicked:
-                print("mouse is currently clicked")
+                x,y = pygame.mouse.get_pos()
+                x_grid = math.floor(x/tile_size)
+                y_grid = math.floor(y/tile_size)
+
+                active_map.add_from_mouse_drag(x_start_grid, y_start_grid, x_grid, y_grid, box_select)
 
     # Update the display screen
     display_screen.fill(WHITE)
@@ -110,5 +129,14 @@ while True:
         pygame.draw.line(display_screen, BLACK, (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
         pygame.draw.line(display_screen, BLACK, (tile.x_pos*tile_size, (tile.y_pos)*tile_size), (tile.x_pos*tile_size, (tile.y_pos+1)*tile_size))
         pygame.draw.line(display_screen, BLACK, ((tile.x_pos+1)*tile_size, tile.y_pos*tile_size), ((tile.x_pos+1)*tile_size, (tile.y_pos+1)*tile_size))
+
+    # If selecting a box, draw box from starting tile to current tile
+    if box_select and mouse_clicked:
+        x_end, y_end = pygame.mouse.get_pos()
+
+        pygame.draw.line(display_screen, BLACK, (x_start, y_start), (x_end, y_start))
+        pygame.draw.line(display_screen, BLACK, (x_start, y_start), (x_start, y_end))
+        pygame.draw.line(display_screen, BLACK, (x_end, y_start), (x_end, y_end))
+        pygame.draw.line(display_screen, BLACK, (x_start, y_end), (x_end, y_end))
 
     pygame.display.update()
